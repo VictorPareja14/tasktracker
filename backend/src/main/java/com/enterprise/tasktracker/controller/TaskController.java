@@ -13,8 +13,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/tasks")
 @RequiredArgsConstructor
@@ -49,8 +47,8 @@ public class TaskController {
      * GET /api/tasks/{id}
      */
     @GetMapping("/{id}")
-    public ResponseEntity<TaskResponse> getTaskById(@PathVariable Long id) {
-        TaskResponse task = taskService.getTaskById(id);
+    public ResponseEntity<TaskResponse> getTaskById(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails currentUser) {
+        TaskResponse task = taskService.getTaskById(id, currentUser);
         return ResponseEntity.ok(task);
     }
 
@@ -61,10 +59,9 @@ public class TaskController {
     @PutMapping("/{id}")
     public ResponseEntity<TaskResponse> updateTask(
             @PathVariable Long id,
-            @Validated @RequestBody TaskRequest request) {
-        // TODO: Obtener el ID del usuario autenticado (para auditoría)
-        Long currentUserId = 1L; // Temporal
-        TaskResponse response = taskService.updateTask(id, request, currentUserId);
+            @Validated @RequestBody TaskRequest request,
+            @AuthenticationPrincipal CustomUserDetails currentUser) {
+        TaskResponse response = taskService.updateTask(id, request, currentUser);
         return ResponseEntity.ok(response);
     }
 
@@ -73,10 +70,8 @@ public class TaskController {
      * DELETE /api/tasks/{id}
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
-        // TODO: Obtener el ID del usuario autenticado (para auditoría)
-        Long currentUserId = 1L; // Temporal
-        taskService.deleteTask(id, currentUserId);
+    public ResponseEntity<Void> deleteTask(@AuthenticationPrincipal CustomUserDetails currentUser, @PathVariable Long id) {
+        taskService.deleteTask(id, currentUser);
         return ResponseEntity.noContent().build();
     }
 
@@ -87,22 +82,9 @@ public class TaskController {
     @PatchMapping("/{id}/status")
     public ResponseEntity<TaskResponse> changeTaskStatus(
             @PathVariable Long id,
-            @RequestParam TaskStatus status) {
-        // TODO: Obtener el ID del usuario autenticado (para auditoría)
-        Long currentUserId = 1L; // Temporal
-        TaskResponse response = taskService.changeTaskStatus(id, status, currentUserId);
+            @RequestParam TaskStatus status,
+            @AuthenticationPrincipal CustomUserDetails currentUser) {
+        TaskResponse response = taskService.changeTaskStatus(id, status, currentUser);
         return ResponseEntity.ok(response);
-    }
-
-    /**
-     * Obtener tareas del usuario autenticado (sus tareas asignadas)
-     * GET /api/tasks/my
-     */
-    @GetMapping("/my")
-    public ResponseEntity<List<TaskResponse>> getMyTasks() {
-        // TODO: Obtener el ID del usuario autenticado
-        Long currentUserId = 1L; // Temporal
-        List<TaskResponse> tasks = taskService.getTasksByUser(currentUserId);
-        return ResponseEntity.ok(tasks);
     }
 }
