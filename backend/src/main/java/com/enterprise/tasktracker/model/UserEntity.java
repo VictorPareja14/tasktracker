@@ -30,7 +30,7 @@ public class UserEntity {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "VARCHAR(20) DEFAULT 'USER'")
+    @Column(length = 20)
     private UserRole role;
 
     @Column(columnDefinition = "BOOLEAN DEFAULT TRUE")

@@ -1,0 +1,60 @@
+<div class="login-container">
+  <div class="login-card">
+
+    <!-- LOGO / HEADER -->
+    <div class="login-logo">
+      <h1>TaskTracker</h1>
+      <p>Gestor de tareas</p>
+    </div>
+
+    <!-- ERROR -->
+    <div *ngIf="error" class="alert">
+      {{ error }}
+    </div>
+
+    <!-- FORMULARIO -->
+    <form (ngSubmit)="onSubmit()">
+
+      <div class="form-group">
+        <label for="username">👤 Usuario</label>
+        <input
+          type="text"
+          class="form-control"
+          id="username"
+          [(ngModel)]="username"
+          name="username"
+          placeholder="Introduce tu usuario"
+          required
+          autofocus
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="password">🔒 Contraseña</label>
+        <input
+          type="password"
+          class="form-control"
+          id="password"
+          [(ngModel)]="password"
+          name="password"
+          placeholder="Introduce tu contraseña"
+          required
+        >
+      </div>
+
+      <button
+        type="submit"
+        class="btn-login"
+        [disabled]="!username || !password || isLoading"
+      >
+        <span *ngIf="!isLoading">Iniciar Sesión</span>
+        <span *ngIf="isLoading">
+          <span class="spinner-border"></span>
+          Autenticando...
+        </span>
+      </button>
+
+    </form>
+
+  </div>
+</div>

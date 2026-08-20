@@ -1,0 +1,52 @@
+<div class="form-container">
+  <div class="form-card">
+    <div class="form-header">
+      <h1>{{ isEditMode ? '✏️ Editar Tarea' : '📝 Crear Nueva Tarea' }}</h1>
+    </div>
+
+    <div *ngIf="errorMessage" class="alert alert-danger">❌ {{ errorMessage }}</div>
+
+    <div *ngIf="isLoading" class="text-center my-4">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+      <p class="mt-2">Cargando...</p>
+    </div>
+
+    <form *ngIf="!isLoading" (ngSubmit)="onSubmit()" class="task-form">
+      <div class="form-group">
+        <label for="title">📌 Título <span class="required">*</span></label>
+        <input type="text" id="title" class="form-control" [(ngModel)]="task.title" name="title" placeholder="Introduce el título" required>
+      </div>
+
+      <div class="form-group">
+        <label for="description">📝 Descripción</label>
+        <textarea id="description" class="form-control" [(ngModel)]="task.description" name="description" rows="4" placeholder="Describe la tarea"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="priority">⚡ Prioridad</label>
+        <select id="priority" class="form-control" [(ngModel)]="task.priority" name="priority">
+          <option *ngFor="let p of priorities" [value]="p">{{ p }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="assignedToId">👤 Asignar a</label>
+        <select id="assignedToId" class="form-control" [(ngModel)]="task.assignedToId" name="assignedToId">
+          <option *ngFor="let user of users" [value]="user.id">{{ user.username }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="dueDate">📅 Fecha límite</label>
+        <input type="date" id="dueDate" class="form-control" [(ngModel)]="task.dueDate" name="dueDate">
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" [disabled]="isLoading">💾 {{ isEditMode ? 'Actualizar' : 'Crear' }}</button>
+        <button type="button" class="btn btn-secondary" (click)="goBack()">↩️ Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -9,8 +9,8 @@ spring:
   jpa:
 
     hibernate:
-      ddl-auto: validate
-    show-sql: true
+      ddl-auto: update
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
@@ -25,3 +25,12 @@ spring:
       max-active: 10
       max-idle: 5
       min-idle: 2
+logging:
+  file:
+    name: logs/tasktracker.log
+  logback:
+    rollingpolicy:
+      file-name-pattern: logs/tasktracker.%d{yyyy-MM-dd}.%i.log
+      max-history: 7
+      max-file-size: 10MB
+      total-size-cap: 1GB

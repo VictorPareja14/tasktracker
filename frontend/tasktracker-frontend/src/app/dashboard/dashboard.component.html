@@ -1,0 +1,74 @@
+<div class="dashboard-container">
+  <!-- HEADER -->
+  <div class="dashboard-header">
+    <div>
+      <h1>📊 Mi Panel</h1>
+      <p class="text-muted">Bienvenido de vuelta, <strong>{{ username }}</strong></p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-primary" (click)="openCreateTask()">➕ Nueva Tarea</button>
+      <button class="btn btn-outline-danger" (click)="logout()">🚪 Cerrar sesión</button>
+    </div>
+  </div>
+
+  <!-- ESTADÍSTICAS -->
+  <div class="summary-cards">
+    <div class="stat-card"><h3>{{ totalTasks }}</h3><p>📋 Total</p></div>
+    <div class="stat-card"><h3>{{ pendingTasks }}</h3><p>⏳ Pendientes</p></div>
+    <div class="stat-card"><h3>{{ inProgressTasks }}</h3><p>🔄 En Progreso</p></div>
+    <div class="stat-card"><h3>{{ completedTasks }}</h3><p>✅ Completadas</p></div>
+  </div>
+
+  <!-- FILTROS -->
+  <div class="filters-row">
+    <div class="search-box">
+      <input type="text" class="form-control" placeholder="🔍 Buscar tareas..." [(ngModel)]="searchTerm" (input)="filterTasks()">
+    </div>
+    <div class="filter-buttons">
+      <button class="btn" [class.active]="selectedFilter === 'ALL'" (click)="filterByStatus('ALL')">📋 Todas</button>
+      <button class="btn" [class.active]="selectedFilter === 'PENDIENTE'" (click)="filterByStatus('PENDIENTE')">⏳ Pendientes</button>
+      <button class="btn" [class.active]="selectedFilter === 'EN_PROGRESO'" (click)="filterByStatus('EN_PROGRESO')">🔄 En Progreso</button>
+      <button class="btn" [class.active]="selectedFilter === 'COMPLETADA'" (click)="filterByStatus('COMPLETADA')">✅ Completadas</button>
+    </div>
+  </div>
+
+  <!-- LISTA DE TAREAS -->
+  <div class="task-list">
+    <h4>📋 Tareas Recientes</h4>
+    <div *ngIf="filteredTasks.length === 0" class="alert alert-info">
+      No tienes tareas que coincidan con los filtros.
+    </div>
+
+    <div *ngFor="let task of filteredTasks" class="task-card">
+      <div class="task-card-header">
+        <a class="task-title-link" [routerLink]="['/tasks', task.id]">
+          {{ task.title }}
+        </a>
+        <span class="task-status" [ngClass]="statusClass(task.status)">
+          {{ formatStatus(task.status) }}
+        </span>
+      </div>
+
+      <div class="task-card-body">
+        <div class="task-description">{{ task.description || 'Sin descripción' }}</div>
+        <div class="task-meta">
+          <span>📅 {{ task.dueDate || 'Sin fecha' }}</span>
+          <span>👤 {{ task.assignedTo?.username || 'Sin asignar' }}</span>
+          <span>📌 {{ task.priority || 'Sin prioridad' }}</span>
+        </div>
+      </div>
+
+      <div class="task-card-actions">
+        <div class="status-selector">
+          <button class="btn-status" [class.active]="task.status === 'PENDIENTE'" (click)="changeStatus(task.id, 'PENDIENTE')">⏳ Pendiente</button>
+          <button class="btn-status" [class.active]="task.status === 'EN_PROGRESO'" (click)="changeStatus(task.id, 'EN_PROGRESO')">🔄 En Progreso</button>
+          <button class="btn-status" [class.active]="task.status === 'COMPLETADA'" (click)="changeStatus(task.id, 'COMPLETADA')">✅ Completada</button>
+        </div>
+        <div class="action-buttons">
+          <button class="btn btn-sm btn-outline-secondary" (click)="editTask(task.id)">✏️ Editar</button>
+          <button class="btn btn-sm btn-outline-danger" (click)="deleteTask(task.id)">🗑️ Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
