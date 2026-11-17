@@ -1,6 +1,7 @@
 package com.enterprise.tasktracker.config;
 
 import com.enterprise.tasktracker.security.CustomUserDetailsService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Configuration
@@ -45,9 +47,32 @@ public class SecurityConfig {
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
-                .formLogin(form -> form.disable())
+                .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(httpBasic -> {
-                })
+                }).exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setContentType("application/json");
+                            response.getWriter().write(
+                                    "{\"timestamp\":\"" + LocalDateTime.now() + "\"," +
+                                            "\"status\":401," +
+                                            "\"error\":\"Unauthorized\"," +
+                                            "\"message\":\"Credenciales inválidas o ausentes\"," +
+                                            "\"path\":\"" + request.getRequestURI() + "\"}"
+                            );
+                        })
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                            response.setContentType("application/json");
+                            response.getWriter().write(
+                                    "{\"timestamp\":\"" + LocalDateTime.now() + "\"," +
+                                            "\"status\":403," +
+                                            "\"error\":\"Forbidden\"," +
+                                            "\"message\":\"No tienes permiso para acceder a este recurso\"," +
+                                            "\"path\":\"" + request.getRequestURI() + "\"}"
+                            );
+                        })
+                )
                 .userDetailsService(userDetailsService);
 
         return http.build();

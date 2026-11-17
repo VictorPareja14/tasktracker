@@ -1,13 +1,14 @@
 spring:
   application:
     name: tasktracker
+  profiles:
+    active: dev
   datasource:
     url: 'jdbc:postgresql://${DB_HOST:localhost}:5432/taskdb'
     username: '${DB_USER:admin}'
     password: '${DB_PASSWORD:admin}'
     driver-class-name: org.postgresql.Driver
   jpa:
-
     hibernate:
       ddl-auto: update
     show-sql: false
@@ -15,22 +16,3 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
-  redis:
-    host: '${REDIS_HOST:localhost}'
-    port: '${REDIS_PORT:6379}'
-    password: '${REDIS_PASSWORD:}'
-    timeout: 2000ms
-    lettuce:
-      pool: null
-      max-active: 10
-      max-idle: 5
-      min-idle: 2
-logging:
-  file:
-    name: logs/tasktracker.log
-  logback:
-    rollingpolicy:
-      file-name-pattern: logs/tasktracker.%d{yyyy-MM-dd}.%i.log
-      max-history: 7
-      max-file-size: 10MB
-      total-size-cap: 1GB

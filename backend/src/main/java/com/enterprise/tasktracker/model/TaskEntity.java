@@ -28,12 +28,12 @@ public class TaskEntity {
     private String description;
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "VARCHAR(20) DEFAULT 'PENDIENTE'")
-    private TaskStatus status;
+    @Column(length = 20)
+    private TaskStatus status = TaskStatus.PENDIENTE;
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "VARCHAR(20) DEFAULT 'MEDIA'")
-    private TaskPriority priority;
+    @Column(length = 20)
+    private TaskPriority priority =  TaskPriority.MEDIA;
 
     @ManyToOne
     @JoinColumn(name = "assigned_to")
